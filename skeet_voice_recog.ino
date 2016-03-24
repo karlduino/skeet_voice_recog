@@ -18,7 +18,9 @@ VR myVR(2,3);    // 2:RX 3:TX, you can choose your favourite pins.
 uint8_t records[7]; // save record
 uint8_t buf[64];
 
-const int leds[4] = {9, 10, 11, 12};
+const int leds[3] = {7, 6, 5}; // double, low, high
+const int power_led = 8;
+const int ready_led = 9;
 
 #define onRecord    (0)
 #define offRecord   (1) 
@@ -96,8 +98,13 @@ void setup()
   
   Serial.begin(115200);
   Serial.println("Elechouse Voice Recognition V3 Module\r\nControl LED sample");
+
+  pinMode(power_led, OUTPUT);
+  digitalWrite(power_led, HIGH);
+  pinMode(ready_led, OUTPUT);
+  digitalWrite(ready_led, LOW);
   
-  for(int i=0; i<4; ++i) {
+  for(int i=0; i<3; ++i) {
     pinMode(leds[i], OUTPUT);
     digitalWrite(leds[i], HIGH);
     delay(1000); 
@@ -131,10 +138,11 @@ void setup()
     Serial.println("dblRecord loaded");
   }
   
-  for(int i=0; i<4; i++) {
+  for(int i=0; i<3; i++) {
     digitalWrite(leds[i], LOW);
   }
   
+  digitalWrite(ready_led, HIGH);
 }
 
 void loop()
@@ -145,39 +153,37 @@ void loop()
     switch(buf[1]){
       case onRecord:
         /** turn on all LEDs */
-        for(int i=0; i<4; i++)
+        for(int i=0; i<3; i++)
           digitalWrite(leds[i], HIGH);
         break;
       case offRecord:
         /** turn off LED*/
-        for(int i=0; i<4; i++)
+        for(int i=0; i<3; i++)
           digitalWrite(leds[i], LOW);
         break;
       case highRecord:
-        /** turn on LED 9 */
-        for(int i=0; i<4; i++)
+        /** turn on left LED */
+        for(int i=0; i<3; i++)
           digitalWrite(leds[i], LOW);
         digitalWrite(leds[0], HIGH);
         delay(2000);
         digitalWrite(leds[0], LOW);
         break;
       case lowRecord:
-        /** turn on LED 10 for 2 sec */
-        for(int i=0; i<4; i++)
+        /** turn on center LED for 2 sec */
+        for(int i=0; i<3; i++)
           digitalWrite(leds[i], LOW);
         digitalWrite(leds[1], HIGH);
         delay(2000);
         digitalWrite(leds[1], LOW);
         break;
       case dblRecord:
-        /** turn on LEDs 9 and 10 for 2 sec */
-        for(int i=0; i<4; i++)
+        /** turn on right LED for 2 sec */
+        for(int i=0; i<3; i++)
           digitalWrite(leds[i], LOW);
-        for(int i=2; i<4; i++)
-          digitalWrite(leds[i], HIGH);
+        digitalWrite(leds[2], HIGH);
         delay(2000);
-        for(int i=2; i<4; i++)
-          digitalWrite(leds[i], LOW);
+        digitalWrite(leds[2], LOW);
         break;
       default:
         Serial.println("Record function undefined");

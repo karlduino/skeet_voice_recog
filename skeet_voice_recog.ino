@@ -18,18 +18,20 @@ VR myVR(2,3);    // 2:RX 3:TX, you can choose your favourite pins.
 uint8_t records[7]; // save record
 uint8_t buf[64];
 
-const int leds[3] = {7, 6, 5}; // double, low, high
-const int activators[3] = {10, 11, 12};
+const int leds[3] = {7, 6, 5}; // high, low, double
+const int activators[3] = {10, 11, 12}; // high, low, double
 const int power_led = 8;
 const int ready_led = 9;
 const int activation_time = 500;
 const int light_time = 1500;
+int last_choice = 10;
 
 #define onRecord    (0)
 #define offRecord   (1) 
 #define highRecord  (2)
 #define lowRecord   (3)
 #define dblRecord   (4)
+#define pullRecord  (5)
 
 
 /**
@@ -96,6 +98,7 @@ void printVR(uint8_t *buf)
 
 void activate(int pin)
 {
+  last_choice = pin;
   digitalWrite(ready_led, LOW);
 
   digitalWrite(activators[pin], HIGH);
@@ -103,7 +106,7 @@ void activate(int pin)
   delay(activation_time);
   digitalWrite(activators[pin], LOW);
   delay(light_time);
-  digitalWrite(leds[pin], HIGH);
+  digitalWrite(leds[pin], LOW);
 
   digitalWrite(ready_led, HIGH);
 }
@@ -157,6 +160,10 @@ void setup()
     Serial.println("dblRecord loaded");
   }
   
+  if(myVR.load((uint8_t)pullRecord) >= 0){
+    Serial.println("pullRecord loaded");
+  }
+  
   for(int i=0; i<3; i++) {
     digitalWrite(leds[i], LOW);
   }
@@ -188,6 +195,9 @@ void loop()
         break;
       case dblRecord:
         activate(2);
+        break;
+      case pullRecord:
+        activate(last_choice);
         break;
       default:
         Serial.println("Record function undefined");

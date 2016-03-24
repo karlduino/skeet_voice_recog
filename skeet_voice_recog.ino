@@ -19,8 +19,11 @@ uint8_t records[7]; // save record
 uint8_t buf[64];
 
 const int leds[3] = {7, 6, 5}; // double, low, high
+const int activators[3] = {10, 11, 12};
 const int power_led = 8;
 const int ready_led = 9;
+const int activation_time = 500;
+const int light_time = 1500;
 
 #define onRecord    (0)
 #define offRecord   (1) 
@@ -91,6 +94,20 @@ void printVR(uint8_t *buf)
   Serial.println("\r\n");
 }
 
+void activate(int pin)
+{
+  digitalWrite(ready_led, LOW);
+
+  digitalWrite(activators[pin], HIGH);
+  digitalWrite(leds[pin], HIGH);
+  delay(activation_time);
+  digitalWrite(activators[pin], LOW);
+  delay(light_time);
+  digitalWrite(leds[pin], HIGH);
+
+  digitalWrite(ready_led, HIGH);
+}
+
 void setup()
 {
   /** initialize */
@@ -106,8 +123,10 @@ void setup()
   
   for(int i=0; i<3; ++i) {
     pinMode(leds[i], OUTPUT);
+    pinMode(activators[i], OUTPUT);
     digitalWrite(leds[i], HIGH);
-    delay(1000); 
+    digitalWrite(activators[i], LOW);
+    delay(500);
   }
     
   if(myVR.clear() == 0){
@@ -162,37 +181,22 @@ void loop()
           digitalWrite(leds[i], LOW);
         break;
       case highRecord:
-        /** turn on left LED */
-        for(int i=0; i<3; i++)
-          digitalWrite(leds[i], LOW);
-        digitalWrite(leds[0], HIGH);
-        delay(2000);
-        digitalWrite(leds[0], LOW);
+        activate(0);
         break;
       case lowRecord:
-        /** turn on center LED for 2 sec */
-        for(int i=0; i<3; i++)
-          digitalWrite(leds[i], LOW);
-        digitalWrite(leds[1], HIGH);
-        delay(2000);
-        digitalWrite(leds[1], LOW);
+        activate(1);
         break;
       case dblRecord:
-        /** turn on right LED for 2 sec */
-        for(int i=0; i<3; i++)
-          digitalWrite(leds[i], LOW);
-        digitalWrite(leds[2], HIGH);
-        delay(2000);
-        digitalWrite(leds[2], LOW);
+        activate(2);
         break;
       default:
         Serial.println("Record function undefined");
         break;
     }
+
     /** voice recognized */
     printVR(buf);
   }
 }
-
 
 

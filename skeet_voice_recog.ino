@@ -19,15 +19,15 @@ uint8_t records[7]; // save record
 uint8_t buf[64];
 
 const int leds[3] = {7, 6, 5}; // high, low, double
-const int activators[3] = {10, 11, 12}; // high, low, double
+const int activators[3] = {12, 11, 10}; // high, low, double
 const int power_led = 8;
 const int ready_led = 9;
-const int activation_time = 500;
-const int light_time = 1500;
+const int activation_time = 250;
+const int light_time = 1750;
 int last_choice = 10;
 
-#define onRecord    (0)
-#define offRecord   (1) 
+#define karlHighRecord    (0)
+#define karlLowRecord     (1) 
 #define highRecord  (2)
 #define lowRecord   (3)
 #define dblRecord   (4)
@@ -140,12 +140,12 @@ void setup()
     while(1);
   }
   
-  if(myVR.load((uint8_t)onRecord) >= 0){
-    Serial.println("onRecord loaded");
+  if(myVR.load((uint8_t)karlHighRecord) >= 0){
+    Serial.println("karlHighRecord loaded");
   }
   
-  if(myVR.load((uint8_t)offRecord) >= 0){
-    Serial.println("offRecord loaded");
+  if(myVR.load((uint8_t)karlLowRecord) >= 0){
+    Serial.println("karlLowRecord loaded");
   }
 
   if(myVR.load((uint8_t)highRecord) >= 0){
@@ -177,15 +177,11 @@ void loop()
   ret = myVR.recognize(buf, 50);
   if(ret>0){
     switch(buf[1]){
-      case onRecord:
-        /** turn on all LEDs */
-        for(int i=0; i<3; i++)
-          digitalWrite(leds[i], HIGH);
+      case karlHighRecord:
+        activate(0);
         break;
-      case offRecord:
-        /** turn off LED*/
-        for(int i=0; i<3; i++)
-          digitalWrite(leds[i], LOW);
+      case karlLowRecord:
+        activate(1);
         break;
       case highRecord:
         activate(0);

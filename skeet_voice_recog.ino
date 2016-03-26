@@ -24,7 +24,7 @@ const int power_led = 8;
 const int ready_led = 9;
 const int activation_time = 250;
 const int light_time = 1750;
-int last_choice = 10;
+int last_choice = 12;
 
 #define karlHighRecord    (0)
 #define karlLowRecord     (1) 
@@ -181,7 +181,7 @@ void loop()
         activate(0);
         break;
       case karlLowRecord:
-        activate(1);
+        activate(2);
         break;
       case highRecord:
         activate(0);

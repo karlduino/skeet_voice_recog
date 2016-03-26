@@ -1,7 +1,7 @@
 /**
  * voice recognition for skeet remote
  * modification of vr_sample_control_led.ino by JiapengLi
- * (demostration of VoiceRecognitionModule)
+ * (demonstration of VoiceRecognitionModule)
  **/
   
 #include <SoftwareSerial.h>
@@ -12,11 +12,13 @@
   Arduino    VoiceRecognitionModule
    2   ------->     TX
    3   ------->     RX
+
+   5,6,7 -----> LEDs for double, low, high
+   8,9   -----> LEDs for power, ready
+   10,11,12 --> activation wires for double, low, high
+                 (need 470 Ohm resistor on high wire)
 */
 VR myVR(2,3);    // 2:RX 3:TX, you can choose your favourite pins.
-
-uint8_t records[7]; // save record
-uint8_t buf[64];
 
 const int leds[3] = {7, 6, 5}; // high, low, double
 const int activators[3] = {12, 11, 10}; // high, low, double
@@ -85,8 +87,9 @@ void setup()
 
 void loop()
 {
-  int ret;
-  ret = myVR.recognize(buf, 50);
+  uint8_t buf[64];
+  int ret = myVR.recognize(buf, 50);
+  
   if(ret>0){
     switch(buf[1]){
       case highRecord:

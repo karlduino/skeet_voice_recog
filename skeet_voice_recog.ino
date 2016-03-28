@@ -8,6 +8,9 @@
 #include "VoiceRecognitionV3.h"
 
 /**        
+  Voice Recognition Module v3: http://bit.ly/1WSEPeZ
+  Library: https://github.com/elechouse/VoiceRecognitionV3
+
   Connection
   Arduino    VoiceRecognitionModule
    2   ------->     TX

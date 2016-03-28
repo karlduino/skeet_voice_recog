@@ -26,6 +26,7 @@ const int power_led = 8;
 const int ready_led = 9;
 const int activation_time = 250;
 const int light_time = 1750;
+const int delay_time = 1000;
 int last_choice = 12;
 
 #define highRecord    (0)
@@ -49,7 +50,20 @@ void activate(int pin)
   delay(light_time);
   digitalWrite(leds[pin], LOW);
 
+  delay(delay_time);
+
   digitalWrite(ready_led, HIGH);
+}
+
+void load_records()
+{
+  myVR.load((uint8_t)highRecord);
+  myVR.load((uint8_t)lowRecord);
+  myVR.load((uint8_t)lowaltRecord);
+  myVR.load((uint8_t)dblRecord);
+  myVR.load((uint8_t)dblaltRecord);
+  myVR.load((uint8_t)pullRecord);
+  myVR.load((uint8_t)pullaltRecord);
 }
 
 void setup()
@@ -70,14 +84,8 @@ void setup()
     delay(500);
   }
     
-  myVR.load((uint8_t)highRecord);
-  myVR.load((uint8_t)lowRecord);
-  myVR.load((uint8_t)lowaltRecord);
-  myVR.load((uint8_t)dblRecord);
-  myVR.load((uint8_t)dblaltRecord);
-  myVR.load((uint8_t)pullRecord);
-  myVR.load((uint8_t)pullaltRecord);
-  
+  load_records();
+
   for(int i=0; i<3; i++) {
     digitalWrite(leds[i], LOW);
   }
